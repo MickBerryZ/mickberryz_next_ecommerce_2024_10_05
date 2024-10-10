@@ -16,7 +16,7 @@ const Footer = () => {
           <span className="font-semibold">+44 012 456 7890</span>
           <div className="flex gap-6">
             <Image src="/facebook.png" alt="" width={16} height={16} />
-            <Image src="/instargram.png" alt="" width={16} height={16} />
+            <Image src="/instagram.png" alt="" width={16} height={16} />
             <Image src="/youtube.png" alt="" width={16} height={16} />
             <Image src="/pinterest.png" alt="" width={16} height={16} />
             <Image src="/x.png" alt="" width={16} height={16} />
