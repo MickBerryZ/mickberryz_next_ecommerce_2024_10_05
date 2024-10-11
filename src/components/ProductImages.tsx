@@ -6,19 +6,19 @@ import { useState } from "react";
 const images = [
   {
     id: 1,
-    url: "https://images.pexels.com/photos/27864588/pexels-photo-27864588/free-photo-of-ortako-mosque-and-clouds.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    url: "https://images.pexels.com/photos/27785700/pexels-photo-27785700/free-photo-of-a-girl-in-jeans-and-sneakers-sitting-on-the-floor.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   },
   {
     id: 2,
-    url: "https://images.pexels.com/photos/17553108/pexels-photo-17553108/free-photo-of-a-highway-with-mountains-in-the-background.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    url: "https://images.pexels.com/photos/27785698/pexels-photo-27785698/free-photo-of-a-girl-in-a-denim-jacket-and-ripped-jeans.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   },
   {
     id: 3,
-    url: "https://images.pexels.com/photos/27549718/pexels-photo-27549718/free-photo-of-english-coast-in-summer.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    url: "https://images.pexels.com/photos/27785707/pexels-photo-27785707/free-photo-of-a-young-woman-in-a-denim-jacket-and-jeans.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   },
   {
     id: 4,
-    url: "https://images.pexels.com/photos/17664216/pexels-photo-17664216/free-photo-of-a-person-fishing-on-the-rocks-near-the-ocean.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    url: "https://images.pexels.com/photos/27785717/pexels-photo-27785717/free-photo-of-a-woman-in-sunglasses-and-a-denim-jacket.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   },
 ];
 
