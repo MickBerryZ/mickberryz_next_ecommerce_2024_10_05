@@ -13,7 +13,15 @@ const CustomizeProduct = () => {
       </ul>
       <h4 className="font-medium">Choose a size</h4>
       <ul className="flex items-center gap-3">
-        <li></li>
+        <li className="ring-1 ring-mickberryz text-mickberryz rounded-md py-1 px-4 text-sm cursor-pointer">
+          Small
+        </li>
+        <li className="ring-1 ring-mickberryz text-white bg-mickberryz rounded-md py-1 px-4 text-sm cursor-pointer">
+          Medium
+        </li>
+        <li className="ring-1 ring-pink-200 text-white bg-pink-200 rounded-md py-1 px-4 text-sm cursor-not-allowed">
+          Large
+        </li>
       </ul>
     </div>
   );
