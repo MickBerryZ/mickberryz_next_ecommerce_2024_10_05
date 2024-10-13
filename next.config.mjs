@@ -10,6 +10,10 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "www.cnet.com",
             },
+            {
+                protocol: "https",
+                hostname: "static.wixstatic.com",
+            },
 
 
         ]
