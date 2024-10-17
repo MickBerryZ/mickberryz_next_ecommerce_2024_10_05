@@ -3,7 +3,7 @@ import { products } from "@wix/stores";
 import { useState } from "react";
 
 const CustomizeProducts = ({
-  prodictId,
+  productId,
   variants,
   productOptions,
 }: {
