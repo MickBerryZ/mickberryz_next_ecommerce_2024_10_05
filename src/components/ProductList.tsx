@@ -25,15 +25,36 @@ const ProductList = async ({
 
   // Step 2: Query products only if categoryId is valid
   // try {
-  const res = await wixClient.products
+  const productQuery = wixClient.products
     .queryProducts()
+    .startsWith("name", searchParams?.name || "")
     .eq("collectionIds", categoryId) // categoryId is valid here
-    .limit(limit || PRODUCT_PER_PAGE)
-    .find();
-  console.log(res.items[0].price); // Debugging line
+    // .hasSome(
+    //   "productType",
+    //   searchParams?.type ? [searchParams.type] : ["physical", "digital"]
+    // )
+    .hasSome("productType", [searchParams?.type || "physical", "digital"])
+    .gt("priceData.price", searchParams?.min || 0)
+    .lt("priceData.price", searchParams?.max || 999999)
+    .limit(limit || PRODUCT_PER_PAGE);
+  // .find();
+
+  // Step 2: Sorting (price, newest/oldest)
+  if (searchParams?.sort) {
+    const [sortType, sortBy] = searchParams.sort.split(" ");
+
+    if (sortType === "asc") {
+      productQuery.ascending(sortBy);
+    }
+    if (sortType === "desc") {
+      productQuery.descending(sortBy);
+    }
+  }
+
+  const res = await productQuery.find();
 
   return (
-    <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap ">
+    <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
       {res.items.map((product: products.Product) => (
         <Link
           href={"/" + product.slug}
@@ -48,9 +69,10 @@ const ProductList = async ({
               sizes="25vw"
               className="absolute object-cover rounded-md z-10 hover:opacity-0 transition-opacity easy duration-500"
             />
-            {product.media?.items && product.media?.items[1]?.image?.url && (
+            {/* {product.media?.items && product.media?.items[1]?.image?.url && ( */}
+            {product.media?.items && (
               <Image
-                src={product.media.items[1].image.url || "/product.png"}
+                src={product.media?.items[1]?.image?.url || "/product.png"}
                 alt=""
                 fill
                 sizes="25vw"
