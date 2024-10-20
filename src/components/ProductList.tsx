@@ -3,8 +3,9 @@ import { products } from "@wix/stores";
 import Image from "next/image";
 import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
+import Pagination from "./Pagination";
 
-const PRODUCT_PER_PAGE = 20;
+const PRODUCT_PER_PAGE = 8;
 
 const ProductList = async ({
   categoryId,
@@ -24,34 +25,40 @@ const ProductList = async ({
   const wixClient = await wixClientServer();
 
   // Step 2: Query products only if categoryId is valid
-  // try {
-  const productQuery = wixClient.products
+  // const productQuery = wixClient.products
+  let productQuery = wixClient.products
     .queryProducts()
     .startsWith("name", searchParams?.name || "")
     .eq("collectionIds", categoryId) // categoryId is valid here
-    // .hasSome(
-    //   "productType",
-    //   searchParams?.type ? [searchParams.type] : ["physical", "digital"]
-    // )
-    .hasSome("productType", [searchParams?.type || "physical", "digital"])
+    .hasSome(
+      "productType",
+      searchParams?.type ? [searchParams.type] : ["physical", "digital"]
+    )
     .gt("priceData.price", searchParams?.min || 0)
     .lt("priceData.price", searchParams?.max || 999999)
-    .limit(limit || PRODUCT_PER_PAGE);
+    .limit(limit || PRODUCT_PER_PAGE)
+    .skip(
+      searchParams?.page
+        ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
+        : 0
+    );
   // .find();
 
-  // Step 2: Sorting (price, newest/oldest)
+  // Step 3: Sorting (price, newest/oldest)
+  let res;
   if (searchParams?.sort) {
     const [sortType, sortBy] = searchParams.sort.split(" ");
 
     if (sortType === "asc") {
-      productQuery.ascending(sortBy);
+      res = await productQuery.ascending(sortBy).find();
+    } else if (sortType === "desc") {
+      res = await productQuery.descending(sortBy).find();
+    } else {
+      res = await productQuery.find();
     }
-    if (sortType === "desc") {
-      productQuery.descending(sortBy);
-    }
+  } else {
+    res = await productQuery.find();
   }
-
-  const res = await productQuery.find();
 
   return (
     <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
@@ -84,6 +91,7 @@ const ProductList = async ({
           <div className="flex justify-between">
             <span className="font-medium">{product.name}</span>
             <span className="font-semibold">${product.price?.price}</span>
+            {/* <span className="font-semibold">${product.priceData?.price}</span> */}
           </div>
           {product.additionalInfoSections && (
             <div
@@ -102,12 +110,13 @@ const ProductList = async ({
           </button>
         </Link>
       ))}
+      <Pagination
+        currentPage={res.currentPage || 0}
+        hasPrev={res.hasPrev()}
+        hasNext={res.hasNext()}
+      />
     </div>
   );
-  // } catch (error) {
-  //   console.error("Error fetching products:", error);
-  //   return <div>Error loading products.</div>;
-  // }
 };
 
 export default ProductList;
