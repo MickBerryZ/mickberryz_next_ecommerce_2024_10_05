@@ -44,7 +44,7 @@ const Add = ({
             </button>
           </div>
           {stockNumber < 1 ? (
-            <div className="text-2xl text-white bg-red-500">
+            <div className=" text-2xl text-white bg-red-500 rounded-md">
               Product is out of stock
             </div>
           ) : (
