@@ -206,7 +206,6 @@ const LoginPage = () => {
           disabled={isLoading}
         >
           {isLoading ? "Loading..." : buttonTitle}
-          {buttonTitle}
         </button>
         {error && <div className="text-red-600">{error}</div>}
         {mode === MODE.LOGIN && (
