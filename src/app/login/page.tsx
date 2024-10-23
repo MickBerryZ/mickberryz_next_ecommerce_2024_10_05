@@ -99,7 +99,6 @@ const LoginPage = () => {
       switch (response?.loginState) {
         case LoginState.SUCCESS:
           setMessage("Logged in successfully!");
-
           const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
             response.data.sessionToken!
           );
@@ -112,6 +111,7 @@ const LoginPage = () => {
           wixClient.auth.setTokens(tokens);
           router.push("/");
           break;
+
         case LoginState.FAILURE:
           if (
             response.errorCode === "invalidEmail" ||
@@ -123,14 +123,14 @@ const LoginPage = () => {
           } else if (response.errorCode === "resetPassword") {
             setError("You need to reset your password!");
           } else {
-            setError("Something wend wrong!!");
+            setError("Something went wrong!!");
           }
 
         case LoginState.EMAIL_VERIFICATION_REQUIRED:
           setMode(MODE.EMAIL_VERIFICATION);
+
         case LoginState.OWNER_APPROVAL_REQUIRED:
           setMessage("Your account is pending approval");
-
         default:
           break;
       }
@@ -202,7 +202,7 @@ const LoginPage = () => {
           </div>
         )}
         <button
-          className="bg-mickberryz text-white p-2 rounded-md disabled: bg-pink-200 disabled:cursor-not-allowed"
+          className="bg-mickberryz text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
           {isLoading ? "Loading..." : buttonTitle}
