@@ -15,8 +15,18 @@ const Footer = () => {
           <span className="font-semibold">mickberryz@gmail.com</span>
           <span className="font-semibold">+44 012 456 7890</span>
           <div className="flex gap-6">
-            <Image src="/facebook.png" alt="" width={16} height={16} />
-            <Image src="/instagram.png" alt="" width={16} height={16} />
+            <Image
+              src="/facebook.png"
+              alt="https://www.facebook.com/mick.berryz"
+              width={16}
+              height={16}
+            />
+            <Image
+              src="/instagram.png"
+              alt="https://www.instagram.com/mickberryz/"
+              width={16}
+              height={16}
+            />
             <Image src="/youtube.png" alt="" width={16} height={16} />
             <Image src="/pinterest.png" alt="" width={16} height={16} />
             <Image src="/x.png" alt="" width={16} height={16} />
@@ -63,7 +73,7 @@ const Footer = () => {
         <div className="w-full md:w-1/2 lg:w-1/4 flex flex-col gap-8">
           <h1 className="font-medium text-lg">SUBSCRIBE</h1>
           <p>
-            Be the first to get te latest news about trends, promotions, and
+            Be the first to get the latest news about trends, promotions, and
             much more!
           </p>
           <div className="flex">
@@ -76,11 +86,41 @@ const Footer = () => {
           </div>
           <span className="font-semibold">Secure Payments</span>
           <div className="flex justify-between">
-            <Image src="/discover.png" alt="" width={40} height={20} />
-            <Image src="/skrill.png" alt="" width={40} height={20} />
-            <Image src="/paypal.png" alt="" width={40} height={20} />
-            <Image src="/mastercard.png" alt="" width={40} height={20} />
-            <Image src="/x.png" alt="" width={40} height={20} />
+            <Image
+              src="/discover.png"
+              alt="discover"
+              width={40}
+              height={20}
+              style={{ width: "auto", height: "auto" }}
+            />
+            <Image
+              src="/skrill.png"
+              alt="skrill"
+              width={40}
+              height={20}
+              style={{ width: "auto", height: "auto" }}
+            />
+            <Image
+              src="/paypal.png"
+              alt="paypal"
+              width={40}
+              height={20}
+              style={{ width: "auto", height: "auto" }}
+            />
+            <Image
+              src="/mastercard.png"
+              alt="mastercard"
+              width={40}
+              height={20}
+              style={{ width: "auto", height: "auto" }}
+            />
+            <Image
+              src="/x.png"
+              alt="x"
+              width={30}
+              height={20}
+              style={{ width: "auto", height: "auto" }}
+            />
           </div>
         </div>
       </div>
