@@ -2,6 +2,7 @@ import { createClient, OAuthStrategy } from "@wix/sdk";
 import { collections, products } from "@wix/stores";
 import { orders } from "@wix/ecom";
 import { cookies} from "next/headers"
+import { members } from "@wix/members"
 
 export const wixClientServer = async () => {
     let refreshToken
@@ -15,6 +16,7 @@ export const wixClientServer = async () => {
     products,
     collections,
     orders,
+    members
   },
   auth: OAuthStrategy({
     clientId: process.env.NEXT_PUBLIC_WIX_CLIENT_ID!,

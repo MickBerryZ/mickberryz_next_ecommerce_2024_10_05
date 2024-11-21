@@ -56,7 +56,8 @@ const OrderPage = async ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <Link href="/" className="underline mt-6">
-        Have a problem? Contact us
+        Have a problem? <br />
+        Contact us
       </Link>
     </div>
   );
