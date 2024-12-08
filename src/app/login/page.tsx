@@ -2,7 +2,7 @@
 
 import { useWixClient } from "@/hooks/useWixClient";
 import { LoginState } from "@wix/sdk";
-import Cookie from "js-cookie";
+import Cookies from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -105,7 +105,7 @@ const LoginPage = () => {
 
           console.log(tokens);
 
-          Cookie.set("refreshToken", JSON.stringify(tokens.refreshToken), {
+          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
             expires: 2,
           });
           wixClient.auth.setTokens(tokens);
