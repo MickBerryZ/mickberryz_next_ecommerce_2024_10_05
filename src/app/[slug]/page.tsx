@@ -54,7 +54,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
           />
         ) : (
           <Add
-            productId={product._id ?? ""}
+            productId={product._id as string}
             variantId="00000000-0000-0000-0000-000000000000"
             stockNumber={product.stock?.quantity || 0}
           />
