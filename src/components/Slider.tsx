@@ -10,7 +10,7 @@ const slides = [
     title: "Summer Sale",
     description: "Sale! Up to 50%",
     img: "https://images.pexels.com/photos/4348801/pexels-photo-4348801.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    url: "/",
+    url: "/list?cat=all-products",
     bg: "bg-gradient-to-r from-yellow-50 to-pink-50",
   },
   {
@@ -18,7 +18,7 @@ const slides = [
     title: "Winter Sale",
     description: "Sale! Up to 50%",
     img: "https://images.pexels.com/photos/16166190/pexels-photo-16166190/free-photo-of-woman-wearing-hat-and-a-sweater.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    url: "/",
+    url: "/list?cat=all-products",
     bg: "bg-gradient-to-r from-pink-50 to-blue-50",
   },
   {
@@ -26,7 +26,7 @@ const slides = [
     title: "Spring Sale",
     description: "Sale! Up to 50%",
     img: "https://images.pexels.com/photos/3387577/pexels-photo-3387577.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    url: "/",
+    url: "/list?cat=all-products",
     bg: "bg-gradient-to-r from-blue-50 to-yellow-50",
   },
 ];
@@ -61,6 +61,7 @@ const Slider = () => {
               </h2>
               <h1 className="">{slide.title}</h1>
               <Link href={slide.url}>
+                {/* <Link href={`/list?cat=${item.slug}`}> */}
                 <button className="rounded-md bg-black text-white py-3 px-4">
                   SHOP NOW
                 </button>
