@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
 import { wixClientServer } from "@/lib/wixClientServer";
@@ -25,25 +26,47 @@ import { format } from "timeago.js";
 
 //   console.log(orderRes);
 
-const ProfilePage = async () => {
-  const wixClient = await wixClientServer();
+const ProfilePage = () => {
+  const [user, setUser] = useState<any>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const user = await wixClient.members.getCurrentMember({
-    fieldsets: [members.Set.FULL],
-  });
-  console.log(user);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const wixClient = await wixClientServer();
+        const currentUser = await wixClient.members.getCurrentMember({
+          fieldsets: [members.Set.FULL],
+        });
+        setUser(currentUser);
 
-  if (!user.member?.contactId) {
-    return <div>Not Logged in!</div>;
+        if (currentUser?.member?.contactId) {
+          const orderRes = await wixClient.orders.searchOrders({
+            search: {
+              filter: {
+                "buyerInfo.contactId": { $eq: currentUser.member.contactId },
+              },
+            },
+          });
+          setOrders(orderRes.orders || []);
+        }
+      } catch (error) {
+        console.error("Error fetching user data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  const orderRes = await wixClient.orders.searchOrders({
-    search: {
-      filter: { "buyerInfo.contactId": { $eq: user.member?.contactId } },
-    },
-  });
-
-  console.log(orderRes);
+  if (!user?.member?.contactId) {
+    return <div>Not Logged In</div>;
+  }
 
   return (
     <div className="flex flex-col md:flex-row gap-24 md:h-[calc(100vh-80px)] items-center px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
@@ -56,21 +79,21 @@ const ProfilePage = async () => {
             type="text"
             name="username"
             placeholder={user.member?.profile?.nickname || "Mickey"}
-            className="ring-1 ring-gray-300 rouned-md p-2 max-w-96"
+            className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
           <label className="text-sm text-gray-700">First Name</label>
           <input
             type="text"
-            name="fisrtname"
+            name="firstname"
             placeholder={user.member?.contact?.firstName || "John"}
-            className="ring-1 ring-gray-300 rouned-md p-2 max-w-96"
+            className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
           <label className="text-sm text-gray-700">Surname</label>
           <input
             type="text"
             name="lastname"
             placeholder={user.member?.contact?.lastName || "MoA"}
-            className="ring-1 ring-gray-300 rouned-md p-2 max-w-96"
+            className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
           <label className="text-sm text-gray-700">Phone</label>
           <input
@@ -81,7 +104,7 @@ const ProfilePage = async () => {
                 user.member?.contact?.phones[0]) ||
               "+1234567"
             }
-            className="ring-1 ring-gray-300 rouned-md p-2 max-w-96"
+            className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
 
           <label className="text-sm text-gray-700">E-mail</label>
@@ -89,7 +112,7 @@ const ProfilePage = async () => {
             type="email"
             name="email"
             placeholder={user.member?.loginEmail || "john@gmail.com"}
-            className="ring-1 ring-gray-300 rouned-md p-2 max-w-96"
+            className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
           <UpdateButton />
         </form>
@@ -97,7 +120,7 @@ const ProfilePage = async () => {
       <div className="w-full md:w-1/2">
         <h1 className="text-2xl">Orders</h1>
         <div className="mt-12 flex flex-col">
-          {orderRes.orders?.map(
+          {orders.map(
             (order) =>
               // Check if order._id is available (i.e., not null or undefined)
               order._id ? (
