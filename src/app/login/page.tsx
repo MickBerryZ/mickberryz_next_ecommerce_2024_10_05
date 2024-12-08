@@ -2,8 +2,8 @@
 
 import { useWixClient } from "@/hooks/useWixClient";
 import { LoginState } from "@wix/sdk";
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 enum MODE {
@@ -34,8 +34,6 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
-  const pathName = usePathname();
 
   const formTitle =
     mode === MODE.LOGIN
@@ -81,7 +79,7 @@ const LoginPage = () => {
         case MODE.RESET_PASSWORD:
           response = await wixClient.auth.sendPasswordResetEmail(
             email,
-            pathName
+            window.location.href
           );
           setMessage("Password reset email send. Please check your e-mail.");
           break;
