@@ -12,7 +12,7 @@ const ProductList = async ({
   limit,
   searchParams,
 }: {
-  categoryId: string;
+  categoryId?: string;
   limit?: number;
   searchParams?: any;
 }) => {
