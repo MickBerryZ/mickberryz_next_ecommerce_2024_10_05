@@ -104,7 +104,7 @@ const CartModel = () => {
           <div className="">
             <div className="flex items-center justify-between font-semibold">
               <span className="">Subtotal</span>
-              <span className="">£ {cart.subtotal.amount}</span>
+              <span className="">£ {(cart as any).subtotal.amount}</span>
             </div>
             <p className="text-gray-500 text-sm mt-2 mb-4">
               Shipping and taxes calculated at checkout.
