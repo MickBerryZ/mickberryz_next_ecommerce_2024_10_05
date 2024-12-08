@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
 import { wixClientServer } from "@/lib/wixClientServer";
@@ -6,67 +5,25 @@ import { members } from "@wix/members";
 import Link from "next/link";
 import { format } from "timeago.js";
 
-// const ProfilePage = async () => {
-//   const wixClient = await wixClientServer();
+const ProfilePage = async () => {
+  const wixClient = await wixClientServer();
 
-//   const user = await wixClient.members.getCurrentMember({
-//     fieldsets: [members.Set.FULL],
-//   });
-//   console.log(user);
+  const user = await wixClient.members.getCurrentMember({
+    fieldsets: [members.Set.FULL],
+  });
+  console.log(user);
 
-//   if (!user.member?.contactId) {
-//     return <div className="">Not Logged in!</div>;
-//   }
-
-//   const orderRes = await wixClient.orders.searchOrders({
-//     search: {
-//       filter: { "buyerInfo.contactId": { $eq: user.member?.contactId } },
-//     },
-//   });
-
-//   console.log(orderRes);
-
-const ProfilePage = () => {
-  const [user, setUser] = useState<any>(null);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const wixClient = await wixClientServer();
-        const currentUser = await wixClient.members.getCurrentMember({
-          fieldsets: [members.Set.FULL],
-        });
-        setUser(currentUser);
-
-        if (currentUser?.member?.contactId) {
-          const orderRes = await wixClient.orders.searchOrders({
-            search: {
-              filter: {
-                "buyerInfo.contactId": { $eq: currentUser.member.contactId },
-              },
-            },
-          });
-          setOrders(orderRes.orders || []);
-        }
-      } catch (error) {
-        console.error("Error fetching user data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!user.member?.contactId) {
+    return <div className="">Not Logged in!</div>;
   }
 
-  if (!user?.member?.contactId) {
-    return <div>Not Logged In</div>;
-  }
+  const orderRes = await wixClient.orders.searchOrders({
+    search: {
+      filter: { "buyerInfo.contactId": { $eq: user.member?.contactId } },
+    },
+  });
+
+  console.log(orderRes);
 
   return (
     <div className="flex flex-col md:flex-row gap-24 md:h-[calc(100vh-80px)] items-center px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
@@ -78,13 +35,13 @@ const ProfilePage = () => {
           <input
             type="text"
             name="username"
-            placeholder={user.member?.profile?.nickname || "Mickey"}
+            placeholder={user.member?.profile?.nickname || "john"}
             className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
           <label className="text-sm text-gray-700">First Name</label>
           <input
             type="text"
-            name="firstname"
+            name="fisrtname"
             placeholder={user.member?.contact?.firstName || "John"}
             className="ring-1 ring-gray-300 rounded-md p-2 max-w-96"
           />
@@ -120,28 +77,22 @@ const ProfilePage = () => {
       <div className="w-full md:w-1/2">
         <h1 className="text-2xl">Orders</h1>
         <div className="mt-12 flex flex-col">
-          {orders.map(
-            (order) =>
-              // Check if order._id is available (i.e., not null or undefined)
-              order._id ? (
-                <Link
-                  href={`/orders/${order._id}`}
-                  key={order._id}
-                  className="flex justify-between px-2 py-6 rounded-md hover:bg-green-50 even:bg-slate-100"
-                >
-                  <span className="w-1/4">
-                    {order._id?.substring(0, 10)}...
-                  </span>
-                  <span className="w-1/4">
-                    ${order.priceSummary?.subtotal?.amount}
-                  </span>
-                  {order._createdDate && (
-                    <span className="w-1/4">{format(order._createdDate)}</span>
-                  )}
-                  <span className="w-1/4">{order.status}</span>
-                </Link>
-              ) : null // If ordere._id is null or undefined, don't render anything
-          )}
+          {orderRes.orders.map((order) => (
+            <Link
+              href={`/orders/${order._id}`}
+              key={order._id}
+              className="flex justify-between px-2 py-6 rounded-md hover:bg-green-50 even:bg-slate-100"
+            >
+              <span className="w-1/4">{order._id?.substring(0, 10)}...</span>
+              <span className="w-1/4">
+                ${order.priceSummary?.subtotal?.amount}
+              </span>
+              {order._createdDate && (
+                <span className="w-1/4">{format(order._createdDate)}</span>
+              )}
+              <span className="w-1/4">{order.status}</span>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
