@@ -24,23 +24,6 @@ import { format } from "timeago.js";
 //   });
 
 //   console.log(orderRes);
-type Order = {
-  _id: string;
-  priceSummary: {
-    subtotal: {
-      amount: number;
-    };
-  };
-  _createdDate: string;
-  status: string;
-};
-
-type ProfileProps = {
-  user: any; // You may define a more specific type for user based on the response
-  orderRes: {
-    orders: Order[];
-  };
-};
 
 const ProfilePage = async () => {
   const wixClient = await wixClientServer();
@@ -48,8 +31,9 @@ const ProfilePage = async () => {
   const user = await wixClient.members.getCurrentMember({
     fieldsets: [members.Set.FULL],
   });
+  console.log(user);
 
-  if (!user?.member?.contactId) {
+  if (!user.member?.contactId) {
     return <div>Not Logged in!</div>;
   }
 
@@ -58,6 +42,8 @@ const ProfilePage = async () => {
       filter: { "buyerInfo.contactId": { $eq: user.member?.contactId } },
     },
   });
+
+  console.log(orderRes);
 
   return (
     <div className="flex flex-col md:flex-row gap-24 md:h-[calc(100vh-80px)] items-center px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
@@ -111,22 +97,28 @@ const ProfilePage = async () => {
       <div className="w-full md:w-1/2">
         <h1 className="text-2xl">Orders</h1>
         <div className="mt-12 flex flex-col">
-          {orderRes.orders?.map((order: Order) => (
-            <Link
-              href={`/orders/${order._id}`}
-              key={order._id}
-              className="flex justify-between px-2 py-6 rounded-md hover:bg-green-50 even:bg-slate-100"
-            >
-              <span className="w-1/4">{order._id?.substring(0, 10)}...</span>
-              <span className="w-1/4">
-                ${order.priceSummary?.subtotal?.amount}
-              </span>
-              {order._createdDate && (
-                <span className="w-1/4">{format(order._createdDate)}</span>
-              )}
-              <span className="w-1/4">{order.status}</span>
-            </Link>
-          ))}
+          {orderRes.orders?.map(
+            (order) =>
+              // Check if order._id is available (i.e., not null or undefined)
+              order._id ? (
+                <Link
+                  href={`/orders/${order._id}`}
+                  key={order._id}
+                  className="flex justify-between px-2 py-6 rounded-md hover:bg-green-50 even:bg-slate-100"
+                >
+                  <span className="w-1/4">
+                    {order._id?.substring(0, 10)}...
+                  </span>
+                  <span className="w-1/4">
+                    ${order.priceSummary?.subtotal?.amount}
+                  </span>
+                  {order._createdDate && (
+                    <span className="w-1/4">{format(order._createdDate)}</span>
+                  )}
+                  <span className="w-1/4">{order.status}</span>
+                </Link>
+              ) : null // If ordere._id is null or undefined, don't render anything
+          )}
         </div>
       </div>
     </div>
