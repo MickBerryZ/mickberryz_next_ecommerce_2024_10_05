@@ -17,9 +17,14 @@ const ProductList = async ({
   searchParams?: any;
 }) => {
   // Step 1: Check if categoryId is missing
-  if (!categoryId) {
-    console.error("categoryId is missing or invalid.");
-    return <div>No category selected.</div>;
+  // if (!categoryId) {
+  //   console.error("categoryId is missing or invalid.");
+  //   return <div>No category selected.</div>;
+  // }
+
+  if (!categoryId && !searchParams?.name) {
+    console.error("Either categoryId or search name must be provided.");
+    return <div>No category or search term provided.</div>;
   }
 
   const wixClient = await wixClientServer();
@@ -79,7 +84,7 @@ const ProductList = async ({
             {/* {product.media?.items && product.media?.items[1]?.image?.url && ( */}
             {product.media?.items && (
               <Image
-                src={product.media?.items[1]?.image?.url || "/product.png"}
+                src={product.media?.items[1]?.image?.url ?? "/product.png"}
                 alt=""
                 fill
                 sizes="25vw"
@@ -90,7 +95,8 @@ const ProductList = async ({
 
           <div className="flex justify-between">
             <span className="font-medium">{product.name}</span>
-            <span className="font-semibold">${product.price?.price}</span>
+            <span className="font-semibold">${product.priceData?.price}</span>
+            {/* <span className="font-semibold">${product.price?.price}</span> */}
             {/* <span className="font-semibold">${product.priceData?.price}</span> */}
           </div>
           {product.additionalInfoSections && (
