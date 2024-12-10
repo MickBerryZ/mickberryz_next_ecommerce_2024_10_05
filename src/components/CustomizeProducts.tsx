@@ -1,7 +1,7 @@
-"use client";
-import { products } from "@wix/stores";
-import { useEffect, useState } from "react";
-import Add from "./Add";
+'use client';
+import { products } from '@wix/stores';
+import { useEffect, useState } from 'react';
+import Add from './Add';
 
 const CustomizeProducts = ({
   productId,
@@ -22,9 +22,7 @@ const CustomizeProducts = ({
     const variant = variants.find((v) => {
       const variantChoices = v.choices;
       if (!variantChoices) return false;
-      return Object.entries(selectedOptions).every(
-        ([key, value]) => variantChoices[key] === value
-      );
+      return Object.entries(selectedOptions).every(([key, value]) => variantChoices[key] === value);
     });
     setSelectedVariant(variant);
   }, [selectedOptions, variants]);
@@ -44,9 +42,7 @@ const CustomizeProducts = ({
       if (!variantChoices) return false;
 
       return (
-        Object.entries(choices).every(
-          ([key, value]) => variantChoices[key] === value
-        ) &&
+        Object.entries(choices).every(([key, value]) => variantChoices[key] === value) &&
         variant.stock?.inStock &&
         variant.stock?.quantity &&
         variant.stock?.quantity > 0
@@ -58,51 +54,51 @@ const CustomizeProducts = ({
 
   return (
     <div className="flex flex-col gap-6">
-      {productOptions.map((option) => (
-        <div className="flex flex-col gap-4" key={option.name}>
+      {/* {productOptions.map((option) => ( */}
+      {productOptions.map((option, optionIndex) => (
+        // <div className="flex flex-col gap-4" key={option.name}>
+        <div className="flex flex-col gap-4" key={option.name ?? optionIndex}>
           <h4 className="font-medium">Choose a {option.name}</h4>
           <ul className="flex items-center gap-3">
-            {option.choices?.map((choice) => {
+            {/* {option.choices?.map((choice) => { */}
+            {option.choices?.map((choice, choiceIndex) => {
               const disabled = !isVariantInStock({
                 ...selectedOptions,
                 [option.name!]: choice.description!,
               });
 
-              const selected =
-                selectedOptions[option.name!] === choice.description;
+              const selected = selectedOptions[option.name!] === choice.description;
 
               const clickHandler = disabled
                 ? undefined
                 : () => handleOptionSelect(option.name!, choice.description!);
 
-              return option.name === "Color" ? (
+              return option.name === 'Color' ? (
                 <li
-                  className="w-8 h-8 rounded-full ring-1 ring-gray-300 relative"
+                  key={choice.value ?? `${choice.description}-${choiceIndex}`}
+                  className="relative h-8 w-8 rounded-full ring-1 ring-gray-300"
                   style={{
                     backgroundColor: choice.value,
-                    cursor: disabled ? "not-allowed" : "pointer",
+                    cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
                   onClick={clickHandler}
                 >
                   {selected && (
-                    <div className="absolute w-10 h-10 rounded-full ring-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                    <div className="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 transform rounded-full ring-2" />
                   )}
                   {disabled && (
-                    <div className="absolute w-10 h-[2px] bg-red-400 rotate-45 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                    <div className="absolute left-1/2 top-1/2 h-[2px] w-10 -translate-x-1/2 -translate-y-1/2 rotate-45 transform bg-red-400" />
                   )}
                 </li>
               ) : (
                 <li
-                  className="ring-1 ring-mickberryz text-mickberryz rounded-md py-1 px-4 text-sm "
+                  key={choice.value ?? `${choice.description}-${choiceIndex}`}
+                  className="rounded-md px-4 py-1 text-sm text-mickberryz ring-1 ring-mickberryz"
                   style={{
-                    cursor: disabled ? "not-allowed" : "pointer",
-                    backgroundColor: selected
-                      ? "#f35c7a"
-                      : disabled
-                      ? "#FBCFE8"
-                      : "white",
-                    color: selected || disabled ? "white" : "#f35c7a",
-                    boxShadow: disabled ? "none" : "",
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    backgroundColor: selected ? '#f35c7a' : disabled ? '#FBCFE8' : 'white',
+                    color: selected || disabled ? 'white' : '#f35c7a',
+                    boxShadow: disabled ? 'none' : '',
                   }}
                   onClick={clickHandler}
                 >
@@ -115,9 +111,7 @@ const CustomizeProducts = ({
       ))}
       <Add
         productId={productId}
-        variantId={
-          selectedVariant?._id || "00000000-0000-0000-0000-000000000000"
-        }
+        variantId={selectedVariant?._id || '00000000-0000-0000-0000-000000000000'}
         stockNumber={selectedVariant?.stock?.quantity || 0}
       />
 

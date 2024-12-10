@@ -1,9 +1,9 @@
-import { wixClientServer } from "@/lib/wixClientServer";
-import { products } from "@wix/stores";
-import Image from "next/image";
-import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
-import Pagination from "./Pagination";
+import { wixClientServer } from '@/lib/wixClientServer';
+import { products } from '@wix/stores';
+import Image from 'next/image';
+import Link from 'next/link';
+import DOMPurify from 'isomorphic-dompurify';
+import Pagination from './Pagination';
 
 const PRODUCT_PER_PAGE = 8;
 
@@ -23,7 +23,7 @@ const ProductList = async ({
   // }
 
   if (!categoryId && !searchParams?.name) {
-    console.error("Either categoryId or search name must be provided.");
+    console.error('Either categoryId or search name must be provided.');
     return <div>No category or search term provided.</div>;
   }
 
@@ -33,30 +33,23 @@ const ProductList = async ({
   // const productQuery = wixClient.products
   let productQuery = wixClient.products
     .queryProducts()
-    .startsWith("name", searchParams?.name || "")
-    .eq("collectionIds", categoryId) // categoryId is valid here
-    .hasSome(
-      "productType",
-      searchParams?.type ? [searchParams.type] : ["physical", "digital"]
-    )
-    .gt("priceData.price", searchParams?.min || 0)
-    .lt("priceData.price", searchParams?.max || 999999)
+    .startsWith('name', searchParams?.name || '')
+    .eq('collectionIds', categoryId) // categoryId is valid here
+    .hasSome('productType', searchParams?.type ? [searchParams.type] : ['physical', 'digital'])
+    .gt('priceData.price', searchParams?.min || 0)
+    .lt('priceData.price', searchParams?.max || 999999)
     .limit(limit || PRODUCT_PER_PAGE)
-    .skip(
-      searchParams?.page
-        ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
-        : 0
-    );
+    .skip(searchParams?.page ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE) : 0);
   // .find();
 
   // Step 3: Sorting (price, newest/oldest)
   let res;
   if (searchParams?.sort) {
-    const [sortType, sortBy] = searchParams.sort.split(" ");
+    const [sortType, sortBy] = searchParams.sort.split(' ');
 
-    if (sortType === "asc") {
+    if (sortType === 'asc') {
       res = await productQuery.ascending(sortBy).find();
-    } else if (sortType === "desc") {
+    } else if (sortType === 'desc') {
       res = await productQuery.descending(sortBy).find();
     } else {
       res = await productQuery.find();
@@ -66,31 +59,33 @@ const ProductList = async ({
   }
 
   return (
-    <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
+    <div className="mt-12 flex flex-wrap justify-between gap-x-8 gap-y-16">
       {res.items.map((product: products.Product) => (
         <Link
-          href={"/" + product.slug}
-          className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%]"
+          href={'/' + product.slug}
+          className="flex w-full flex-col gap-4 sm:w-[45%] lg:w-[22%]"
           key={product._id}
         >
-          <div className="relative w-full h-80">
+          <div className="relative h-80 w-full">
             <Image
-              src={product.media?.mainMedia?.image?.url || "/product.png"}
+              src={product.media?.mainMedia?.image?.url || '/product.png'}
               alt=""
               fill
               sizes="25vw"
-              className="absolute object-cover rounded-md z-10 hover:opacity-0 transition-opacity easy duration-500"
+              className="easy absolute z-10 rounded-md object-cover transition-opacity duration-500 hover:opacity-0"
             />
-            {/* {product.media?.items && product.media?.items[1]?.image?.url && ( */}
-            {product.media?.items && (
+            {/* {product.media?.items && ( */}
+            {product.media?.items?.map((mediaItem, index) => (
               <Image
-                src={product.media?.items[1]?.image?.url ?? "/product.png"}
+                // src={product.media?.items[1]?.image?.url ?? '/product.png'}
+                src={mediaItem?.image?.url ?? '/product.png'}
+                key={index}
                 alt=""
                 fill
                 sizes="25vw"
-                className="absolute object-cover rounded-md"
+                className="absolute rounded-md object-cover"
               />
-            )}
+            ))}
           </div>
 
           <div className="flex justify-between">
@@ -105,13 +100,13 @@ const ProductList = async ({
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
                   product.additionalInfoSections.find(
-                    (section: any) => section.title === "shortDesc"
-                  )?.description || ""
+                    (section: any) => section.title === 'shortDesc'
+                  )?.description || ''
                 ),
               }}
             ></div>
           )}
-          <button className="rounded-2xl ring-1 ring-mickberryz text-mickberryz w-max py-2 px-4 text-xs hover:bg-mickberryz hover:text-white">
+          <button className="w-max rounded-2xl px-4 py-2 text-xs text-mickberryz ring-1 ring-mickberryz hover:bg-mickberryz hover:text-white">
             Add to Cart
           </button>
         </Link>
