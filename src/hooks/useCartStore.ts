@@ -1,6 +1,6 @@
-import { create } from 'zustand'
-import { currentCart } from '@wix/ecom'
-import { WixClient } from '@/context/wixContext';
+import { create } from "zustand";
+import { currentCart } from "@wix/ecom";
+import { WixClient } from "@/context/wixContext";
 
 type CartState = {
     cart: currentCart.Cart;
@@ -22,15 +22,31 @@ export const useCartStore = create<CartState>((set) => ({
     counter: 0,
     getCart: async (wixClient)=> {
         try {
+
+                // Check if user is authenticated
+                if (!wixClient.auth.tokens.accessToken.value) {
+                    throw new Error('User is not authenticated.');
+    }
+            
             const cart = await wixClient.currentCart.getCurrentCart();
             set({ 
                 cart: cart || [],
                 isLoading: false,
-                counter:cart?.lineItems.length || 0, 
+                // counter: cart?.lineItems.length || 0, 
+                counter: cart?.lineItems?.length || 0, 
             })
         } catch (err) {
             console.error('Error fetching cart:', err);
             set((prev) => ({ ...prev, isLoading: false}))
+    //         if (err.message.includes("OWNER_CART_NOT_FOUND")) {
+    //             console.warn("No Cart found for this user.")
+    //             set({ cart: [], isLoading: false, counter: 0 });
+    //         } else if (err.message.includes("System error occurred")) {
+    //   console.warn('System error occurred:', err);
+    // } else {
+    //   console.error('Error fetching cart:', err);
+    // }
+    // set({ isLoading: false });
         }
     },
     addItem: async (wixClient, productId, variantId, quantity)=> {
@@ -41,9 +57,10 @@ export const useCartStore = create<CartState>((set) => ({
                     catalogReference: {
                         appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
                         catalogItemId: productId,
-                        ...(variantId && { options: { variantId } }),
+                        ...(variantId && { options: {
+                            variantId } }),
                     },
-                    quantity: quantity,
+                     quantity: quantity,
                 },
             ],
         });

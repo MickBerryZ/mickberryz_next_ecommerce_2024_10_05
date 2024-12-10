@@ -1,8 +1,8 @@
-"use server"
+"use server";
 
-import { wixClientServer } from "./wixClientServer"
+import { wixClientServer } from "./wixClientServer";
 
-export const updateUser = async (formData:FormData) => {
+export const updateUser = async (formData: FormData) => {
 
     const wixClient = await wixClientServer()
 
@@ -13,13 +13,15 @@ export const updateUser = async (formData:FormData) => {
     const email = formData.get("email") as string
     const phone = formData.get("phone") as string
 
+     console.log(username)
+
     try {
         const response = await wixClient.members.updateMember(id, {
             contact:{
-                firstName: firstName || undefined,
-                lastName: lastName || undefined,
-                phones: [phone] || undefined,
-            },
+        firstName: firstName || undefined,
+        lastName: lastName || undefined,
+        phones: [phone] || undefined,
+      },
                 loginEmail: email || undefined,
                 profile: { nickname: username || undefined},
         })
