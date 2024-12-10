@@ -4,24 +4,28 @@ import { orders } from '@wix/ecom';
 import { cookies } from 'next/headers';
 import { members } from '@wix/members';
 
-// export const wixClientServer = async () => {
-//     let refreshToken
-
-//     try {
-//     const cookieStore = cookies()
-//     refreshToken = JSON.parse(cookieStore.get("refreshToken")?.value || "{}")
-// } catch (e) {}
 export const wixClientServer = async () => {
   let refreshToken;
+
   try {
     const cookieStore = cookies();
-    refreshToken = cookieStore.get('refreshToken')?.value;
+    // refreshToken = cookieStore.get('refreshToken')?.value;
+    const tokenString = cookieStore.get('refreshToken')?.value;
 
+    if (tokenString) {
+      refreshToken = JSON.parse(tokenString);
+    }
+    // If the refreshToken is not found, throw an error or set a fallback value
     if (!refreshToken) {
       throw new Error('Refresh token is missing. User may not be authenticated.');
     }
   } catch (e) {
     console.error('Error reading refresh token', e);
+  }
+
+  // Ensure refreshToken is a valid string. If not, throw an error.
+  if (!refreshToken) {
+    throw new Error('No refresh token available');
   }
 
   const wixClient = createClient({
