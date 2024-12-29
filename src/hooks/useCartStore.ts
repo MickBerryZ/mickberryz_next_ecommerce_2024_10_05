@@ -3,7 +3,7 @@ import { currentCart } from '@wix/ecom';
 import { WixClient } from '@/context/wixContext';
 
 type CartState = {
-  cart: currentCart.Cart;
+  cart: currentCart.Cart | [];
   isLoading: boolean;
   counter: number;
   getCart: (wixClient: WixClient) => void;
@@ -16,13 +16,10 @@ export const useCartStore = create<CartState>((set) => ({
   isLoading: true,
   counter: 0,
   getCart: async (wixClient) => {
-    const wixAccessToken = wixClient.auth.getTokens().accessToken.value;
     try {
-      // Check if user is authenticated
-      //   if (!wixClient.auth.tokens.accessToken.value) {
-      //     throw new Error('User is not authenticated.');
-      //   }
+      const wixAccessToken = wixClient.auth.getTokens().accessToken.value;
       if (!wixAccessToken) throw new Error('User is not authenticated.');
+
       const cart = await wixClient.currentCart.getCurrentCart();
       set({
         cart: cart || [],
@@ -30,52 +27,72 @@ export const useCartStore = create<CartState>((set) => ({
         counter: cart?.lineItems?.length || 0,
       });
     } catch (err) {
-      console.error('Error fetching cart:', err);
-      set((prev) => ({ ...prev, isLoading: false }));
-      //         if (err.message.includes("OWNER_CART_NOT_FOUND")) {
-      //             console.warn("No Cart found for this user.")
-      //             set({ cart: [], isLoading: false, counter: 0 });
-      //         } else if (err.message.includes("System error occurred")) {
-      //   console.warn('System error occurred:', err);
-      // } else {
-      //   console.error('Error fetching cart:', err);
-      // }
-      // set({ isLoading: false });
+      if (err instanceof Error) {
+        console.error('Error fetching cart:', err.message);
+
+        if (err.message.includes('OWNER_CART_NOT_FOUND')) {
+          console.warn('No cart found for this user.');
+          set({ cart: [], isLoading: false, counter: 0 });
+        } else {
+          set((prev) => ({ ...prev, isLoading: false }));
+        }
+      } else {
+        console.error('Unknow error fetching cart:', err);
+        set((prev) => ({ ...prev, isLoading: false }));
+      }
     }
   },
   addItem: async (wixClient, productId, variantId, quantity) => {
-    set((state) => ({ ...state, isLoading: true }));
-    const response = await wixClient.currentCart.addToCurrentCart({
-      lineItems: [
-        {
-          catalogReference: {
-            appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
-            catalogItemId: productId,
-            ...(variantId && {
-              options: {
-                variantId,
-              },
-            }),
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const response = await wixClient.currentCart.addToCurrentCart({
+        lineItems: [
+          {
+            catalogReference: {
+              appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
+              catalogItemId: productId,
+              ...(variantId && { options: { variantId } }),
+            },
+            quantity: quantity,
           },
-          quantity: quantity,
-        },
-      ],
-    });
+        ],
+      });
 
-    set({
-      cart: response.cart,
-      counter: response.cart?.lineItems.length,
-      isLoading: false,
-    });
+      if (!response || !response.cart) throw new Error('Failed to update cart.');
+
+      set({
+        cart: response.cart,
+        counter: response.cart?.lineItems.length || 0,
+        isLoading: false,
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error('Error adding item to cart:', err.message);
+      } else {
+        console.error('Unknow error adding item to cart:', JSON.stringify(err));
+      }
+      set({ isLoading: false });
+    }
   },
   removeItem: async (wixClient, itemId) => {
-    set((state) => ({ ...state, isLoading: true }));
-    const response = await wixClient.currentCart.removeLineItemsFromCurrentCart([itemId]);
+    try {
+      set((state) => ({ ...state, isLoading: true }));
+      const response = await wixClient.currentCart.removeLineItemsFromCurrentCart([itemId]);
 
-    set({
-      cart: response.cart,
-      counter: response.cart?.lineItems.length,
-      isLoading: false,
-    });
+      if (!response || !response.cart) throw new Error('Failed to update cart.');
+
+      set({
+        cart: response.cart,
+        counter: response.cart?.lineItems.length || 0,
+        isLoading: false,
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error('Error removing item from cart:', err.message);
+      } else {
+        console.error('Unknown error removing item from cart:', JSON.stringify(err));
+      }
+      set({ isLoading: false });
+    }
   },
 }));
