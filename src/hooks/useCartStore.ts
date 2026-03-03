@@ -15,9 +15,13 @@ export const useCartStore = create<CartState>((set) => ({
   cart: [],
   isLoading: true,
   counter: 0,
+
+  // Fetch the cart only if the user is authenticated
   getCart: async (wixClient) => {
     try {
       const wixAccessToken = wixClient.auth.getTokens().accessToken.value;
+      console.log('Access Token:', wixAccessToken);
+
       if (!wixAccessToken) throw new Error('User is not authenticated.');
 
       const cart = await wixClient.currentCart.getCurrentCart();
